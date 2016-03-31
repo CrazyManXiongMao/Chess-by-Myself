@@ -1,0 +1,227 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Chess-by-myself by CrazyManXiongMao</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/CrazyManXiongMao/Chess-by-Myself">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/CrazyManXiongMao/Chess-by-Myself/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/CrazyManXiongMao/Chess-by-Myself/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Chess-by-myself</h1>
+          <p>It is my first design on C#,pleace check it and show me the right answer.I m happy to be your student.Xiongmao</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/CrazyManXiongMao">CrazyManXiongMao</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h3>
+<a id="my-design" class="anchor" href="#my-design" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>My design</h3>
+
+<p>Chess
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;</p>
+
+<p>namespace 五子棋
+{
+    public partial class Form1:Form
+    {</p>
+
+<pre><code>    public Form1()
+    {
+        InitializeComponent();
+        gp=label2.CreateGraphics();
+    }
+    Graphics gp;
+    bool wanjia=false;
+    bool startGame=false;
+    bool[,] qipan=new bool[16,16];
+    bool[,] qipan2=new bool[16,16];
+    private void timer1_Tick(object sender,EventArgs e)  //绘制棋盘
+    {
+        startGame=false;
+        for(int i=0;i&lt;16;i++)
+            for(int j=0;j&lt;16;j++)
+                qipan[i,j]=false;
+        for(int i=0;i&lt;16;i++)
+            for(int j=0;j&lt;16;j++)
+                qipan2[i,j]=false;
+        gp.Clear(Color.Khaki);
+        for(int i=0;i&lt;=504;i+=36){
+            gp.DrawLine(Pens.Gray,0,i,503,i);;
+        }
+        for(int i=0;i&lt;=504;i+=36){
+            gp.DrawLine(Pens.Gray,i,0,i,503); 
+        }
+        Pen p=new Pen(Brushes.Gray,5);
+        gp.DrawRectangle(p,0,0,504,504);
+        if(timer1.Enabled==true) timer1.Enabled=false;
+    }
+
+    private void label2_MouseDown(object sender,MouseEventArgs e)
+    {
+        int x,y;
+        x=(e.X+20)/36;
+        y=(e.Y+20)/36;
+
+        label3.Text=x.ToString()+","+y.ToString();
+        Rectangle r=new Rectangle(x*36-15,y*36-15,30,30);
+
+        if(wanjia){
+        a:
+            if(qipan[x,y]==false&amp;&amp;qipan2[x,y]==false)
+            {
+                gp.FillEllipse(Brushes.White,r);
+                qipan[x,y]=true;
+            }
+            else
+            {
+                goto timer2_Tick()
+                goto b;
+            }
+
+            if(checkWin(x,y)){
+                MessageBox.Show("白子赢了");
+                timer1.Enabled=true;
+            }
+        }
+        else{
+        b:
+            if(qipan[x,y]==false&amp;&amp;qipan2[x,y]==false)
+            {
+                gp.FillEllipse(Brushes.Black,r);
+                qipan2[x,y]=true;
+            }
+            else
+            {
+                goto timer2_Tick();
+                goto a;
+            }
+            if(checkWin2(x,y)){
+                MessageBox.Show("黑子赢了");
+                timer1.Enabled=true;
+            }
+        }
+        wanjia=!wanjia;
+    }
+    private bool checkWin(int x,int y)    //判断胜利
+    {
+        for(int i=0,win=0;i&lt;16;i++){   //判断横线
+            if(qipan[i,y]==true) win++;
+            else win=0;
+            if(win==5) return true;
+        }
+        for(int i=0,win=0;i&lt;16;i++){  //判断竖线 
+            if(qipan[x,i]==true) win++;
+            else win=0;
+            if(win==5) return true;
+        }
+        for(int i=x,j=y,win=0;i&gt;=0&amp;&amp;j&gt;=0;i--,j--){  //判断左斜线
+            if(qipan[i,j]==true) win++;
+            else win=0;
+            if(win==5) return true;
+        }
+        for(int i=x,j=y,win=0;i&lt;=15&amp;&amp;j&lt;=15;i++,j++){ //判断右斜
+            if(qipan[i,j]==true) win++;
+            else win=0;
+            if(win==5) return true;
+        }
+        for(int i=x,j=y,win=0;i&gt;=0&amp;&amp;j&lt;=15;i--,j++){  //判断右上
+            if(qipan[i,j]==true) win++;
+            else win=0;
+            if(win==5) return true;
+        }
+        for(int i=x,j=y,win=0;i&lt;=15&amp;&amp;j&gt;=0;i++,j--){ //判断左下
+            if(qipan[i,j]==true) win++;
+            else win=0;
+            if(win==5) return true;
+        }
+            return false;
+    }
+    private bool checkWin2(int x,int y)    //判断胜利
+    {
+        for(int i=0,win=0;i&lt;16;i++){   //判断横线
+            if(qipan2[i,y]==true) win++;
+            else win=0;
+            if(win==5) return true;
+        }
+        for(int i=0,win=0;i&lt;16;i++){  //判断竖线
+            if(qipan2[x,i]==true) win++;
+            else win=0;
+            if(win==5) return true;
+        }
+        for(int i=x,j=y,win=0;i&gt;=0&amp;&amp;j&gt;=0;i--,j--){  //判断左斜线
+            if(qipan2[i,j]==true) win++;
+            else win=0;
+            if(win==5) return true;
+        }
+        for(int i=x,j=y,win=0;i&lt;=15&amp;&amp;j&lt;=15;i++,j++){ //判断右斜
+            if(qipan2[i,j]==true) win++;
+            else win=0;
+            if(win==5) return true;
+        }
+        for(int i=x,j=y,win=0;i&gt;=0&amp;&amp;j&lt;=15;i--,j++){  //判断右上
+            if(qipan2[i,j]==true) win++;
+            else win=0;
+            if (win==5) return true;
+        }
+        for(int i=x,j=y, win=0;i&lt;=15&amp;&amp;j&gt;=0;i++,j--){ //判断左下
+            if(qipan2[i,j]==true) win++;
+            else win=0;
+            if(win==5) return true;
+        }
+        return false;
+    }
+
+    private void button1_Click(object sender, EventArgs e)
+    {
+        if (radioButton2.Checked == true)
+            startGame = true;
+        else
+        {
+            MessageBox.Show("人机暂未开放。");
+        }
+    }
+}
+</code></pre>
+
+<p>}</p>
+
+<h3>
+<a id="designer-by-xiongmao" class="anchor" href="#designer-by-xiongmao" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Designer by xiongmao</h3>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
